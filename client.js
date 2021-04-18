@@ -8,18 +8,26 @@ let store = {
 const root = document.getElementById('root')
 
 const updateStore = (store, newState) => {
+    console.log('This is the update Store fn with one render')
+
     store = Object.assign(store, newState)
     render(root, store)
 }
 
 const render = async (root, state) => {
     root.innerHTML = App(state)
+    console.log('This is the render function' + state)
 }
+
 
 
 // create content
 const App = (state) => {
     let { rovers, apod } = state
+
+    console.log('This is the App function' + store);
+    console.log('This is the App function' + apod);
+    console.log('This is the App function' + rovers);
 
     return `
         <header></header>
@@ -46,12 +54,15 @@ const App = (state) => {
 // listening for load event because page should load before any JS is called
 window.addEventListener('load', () => {
     render(root, store)
+    console.log('This is the event listener with second render' + store);
+    
 })
 
 // ------------------------------------------------------  COMPONENTS
 
 // Pure function that renders conditional information -- THIS IS JUST AN EXAMPLE, you can delete it.
 const Greeting = (name) => {
+    console.log('This is the Greeting function' + name);
     if (name) {
         return `
             <h1>Welcome, ${name}!</h1>
@@ -61,29 +72,32 @@ const Greeting = (name) => {
     return `
         <h1>Hello!</h1>
     `
+    
+
 }
 
 // Example of a pure function that renders infomation requested from the backend
 const ImageOfTheDay = (apod) => {
 
+    console.log('This is the Image of the day function' + apod)
     // If image does not already exist, or it is not from today -- request it again
     const today = new Date()
     const photodate = new Date(apod.date)
-    console.log(photodate.getDate(), today.getDate());
-
-    console.log(photodate.getDate() === today.getDate());
-    if (!apod || apod.date === today.getDate() ) {
+    if (!apod || apod.date === today.getDate()) {
         getImageOfTheDay(store)
     }
 
     // check if the photo of the day is actually type video!
+    
     if (apod.media_type === "video") {
+        console.log('if block');
         return (`
             <p>See today's featured video <a href="${apod.url}">here</a></p>
             <p>${apod.title}</p>
             <p>${apod.explanation}</p>
         `)
     } else {
+        console.log('else block');
         return (`
             <img src="${apod.image.url}" height="350px" width="100%" />
             <p>${apod.image.explanation}</p>
@@ -95,11 +109,16 @@ const ImageOfTheDay = (apod) => {
 
 // Example API call
 const getImageOfTheDay = (state) => {
+
+    console.log('This is API call to local host')
     let { apod } = state
 
     fetch(`http://localhost:3000/apod`)
         .then(res => res.json())
         .then(apod => updateStore(store, { apod }))
 
-    return data
+        return data
 }
+
+
+
